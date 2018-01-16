@@ -182,16 +182,14 @@ public:
 
     std::string build_log_string() {
         std::stringstream ss;
-        std::string line;
         std::time_t t = std::chrono::system_clock::to_time_t(
                 std::chrono::system_clock::now());
-        ss << std::put_time(std::localtime(&t), "%FT%TZ");
 
-        line = name + "," + ss.str() + ",";
+        ss << name << "," << std::put_time(std::localtime(&t), "%FT%TZ");
         for (BatteryStat& b : battery_stats) {
-            line += b.data + ",";
+            ss << "," << b.data;
         }
-        return line;
+        return ss.str();
     }
 
     std::vector<std::string> data_vector() {

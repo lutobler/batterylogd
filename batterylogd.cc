@@ -18,7 +18,6 @@
 #include <dirent.h>
 #include <libgen.h>
 #include <ctime>
-#include <mutex>
 #include <condition_variable>
 #include <memory>
 #include <assert.h>

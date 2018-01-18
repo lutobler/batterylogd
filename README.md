@@ -1,18 +1,26 @@
 ## batterylogd
 
-`batterylogd` is a small daemon that continuously logs battery information.
-The data is stored in a CSV format that can then be analysed further.
+`batterylogd` is a small daemon that continuously logs battery and backlight information.
+The data is stored in a CSV format that can be analysed further.
 
-The following CSV format is used:
+### The following CSV formats are used:
 
+For batteries:
 ```
-battery_name,date,capacity,cycle_count,energy_full,energy_full_design,energy_now,power_now,present,status,voltage_min_design,voltage_now
-
+battery,battery_name,date,capacity,cycle_count,energy_full,energy_full_design,energy_now,power_now,present,status,voltage_min_design,voltage_now
 ```
 
-* `battery_name` is the directory name in sysfs
-* `date` is in ISO 8601 format. 
-* The other data points correspond to the sysfs interface (e.g. `/sys/class/power_supply/BAT0`)
+For backlights:
+```
+backlight,backlight_name,date,max_brightness,brightness
+```
+
+Example data gathered on a Lenovo x270:
+```
+battery,BAT1,2018-01-18T20:12:09Z,5,341,21390000,23480000,1150000,0,1,Unknown,11400000,11004000
+battery,BAT0,2018-01-18T20:12:09Z,87,183,21810000,23480000,18980000,3871000,1,Discharging,11400000,12136000
+backlight,intel_backlight,2018-01-18T20:12:09Z,2210,6818
+```
 
 ## Usage
 
@@ -23,11 +31,11 @@ Usage: batterylogd [options]
   -v   --version       Print version information and exit.
   -i   --interval      Sampling interval. Defaults to 30 seconds.
   -b   --battery       Path to a battery in sysfs. Argument can be specified
-                       multiple times. If omitted entirely, automatic battery
-                       detection will be enabled.
+                       multiple times. If omitted entirely, automatic detection
+                       will be enabled.
   -L   --backlight     Add entries for the display backlight to the log.
-                       Fields for 'max_brightness' and 'current_brightness'
-                       will be appended to the logged battery data.
+                       Argument can be specified multiple times. If omitted
+                       entirely, automatic detection will be enabled.
   -l   --log           Path to log file. Defaults to $HOME/batterylogd.log.
 ```
 

@@ -202,15 +202,15 @@ public:
     void write() {
         for (std::shared_ptr<DataCollection>& dc : data_collections_) {
             std::stringstream ss;
-            std::vector<std::string> dv = dc.get()->data_vector();
+            std::vector<std::string> dv = dc->data_vector();
             std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
             for (std::string& s : dv) {
                 ss << "," << s;
             }
 
-            log_file_ << dc.get()->type()
-                      << "," << dc.get()->name()
+            log_file_ << dc->type()
+                      << "," << dc->name()
                       << "," << std::put_time(std::localtime(&t), "%FT%TZ")
                       << ss.str() << std::endl;
         }
@@ -290,7 +290,7 @@ public:
 
         /* log configured batteries to stdout */
         for (std::shared_ptr<DataCollection>& dc : detected) {
-            std::cout << "Added device " << dc.get()->name() << std::endl;
+            std::cout << "Added device " << dc->name() << std::endl;
         }
 
         /* merge vectors */
@@ -422,7 +422,7 @@ int main(int argc, char **argv) {
         std::chrono::seconds interval(sample_interval);
         while (true) {
             for (std::shared_ptr<DataCollection>& dc : data_collections) {
-                dc.get()->sample_all();
+                dc->sample_all();
             }
             log_builder.write();
 

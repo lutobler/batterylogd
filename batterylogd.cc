@@ -273,8 +273,7 @@ public:
         if (args.size() == 0) {
             detected = auto_detect_();
             if (detected.size() == 0) {
-                std::cerr << "No device in " << base_path_
-                          << " found. Provide -b argument." << std::endl;
+                std::cerr << "No device in " << base_path_ << " found" << std::endl;
                 return false;
             }
 
@@ -284,6 +283,8 @@ public:
                 std::shared_ptr<DataCollection> t_ptr(new T(s));
                 if (t_ptr->initialize()) {
                     detected.push_back(t_ptr);
+                } else {
+                    return false;
                 }
             }
         }
@@ -373,9 +374,11 @@ int main(int argc, char **argv) {
     DeviceDetector<BatteryDataCollection> battery_detector(kBatterySysfs, "type", "Battery");
     DeviceDetector<BacklightDataCollection> backlight_detector(kBacklightSysfs, "type", "raw");
     if (!battery_detector.detect_from_cmdline(data_collections, cmdline_batteries)) {
+        std::cout << "Invalid battery given" << std::endl;
         std::exit(EXIT_FAILURE);
     }
     if (!backlight_detector.detect_from_cmdline(data_collections, cmdline_backlights)){
+        std::cout << "Invalid backlight given" << std::endl;
         std::exit(EXIT_FAILURE);
     }
 
@@ -406,7 +409,8 @@ int main(int argc, char **argv) {
 
     /*
      * Use a signal handler thread because operations on condition variables
-     * are not async-safe.
+     * are not async-safe and therefore timer.kill() can't be called from
+     * a signal handler.
      */
     KillableTimer timer;
     std::thread sig_handler([&] (void) {
